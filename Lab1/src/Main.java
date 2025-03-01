@@ -41,7 +41,6 @@ public class Main {   //this is the HW
         if (args.length == 2) {
             n = Integer.parseInt(args[0]);
             k = Integer.parseInt(args[1]);
-
         }
         else {
             System.out.println("Invalid input");
