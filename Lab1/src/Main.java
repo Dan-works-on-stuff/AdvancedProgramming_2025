@@ -42,8 +42,7 @@ public class Main {   //this is the HW
             System.out.println("Invalid input");
             return;
         }
-        int i=0, j=0;
-        int [][] a = new int[n][n];
+        int [][] a;
         a=helper_functions.generateAdjMatrix(n,k);
         if (a == null) {
             System.out.println("Not possible");
