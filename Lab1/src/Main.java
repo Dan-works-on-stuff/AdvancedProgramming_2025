@@ -37,38 +37,36 @@ public class Main {   //this is the HW
         if (args.length == 2) {
             n = Integer.parseInt(args[0]);
             k = Integer.parseInt(args[1]);
-        }
-        else {
+        } else {
             System.out.println("Invalid input");
             return;
         }
-        int [][] a;
-        a=helper_functions.generateAdjMatrix(n,k);
+        int[][] a;
+        a = helper_functions.generateAdjMatrix(n, k);
         if (a == null) {
             System.out.println("Not possible");
             return;
         }
-        if(n<100){
+        if (n < 100) {
             String matrix_str = helper_functions.turn_to_string(a, n);
             System.out.println(matrix_str);
-        }else System.out.println();
-        int m=helper_functions.count_edges(a, n);
+        } else System.out.println();
+        int m = helper_functions.count_edges(a, n);
         System.out.println("Number of edges: " + m);
         DegreeResult result = new DegreeResult();
         helper_functions.min_max_degree(a, n, result);
         System.out.println("\u03B4(G)= " + result.min_degree);
         System.out.println("\u0394(G)= " + result.max_degree);
-        if(helper_functions.sum_of_degrees(a, n) == 2*m)
+        if (helper_functions.sum_of_degrees(a, n) == 2 * m)
             System.out.println("proper graph mate");
         else System.out.println("not proper graph mate");
     }
 
-    public static class DegreeResult{
+    public static class DegreeResult {
         public int min_degree;
         public int max_degree;
     }
 }
-
 
 
 //grading: quiz each lab from previous course, max 50, min 25

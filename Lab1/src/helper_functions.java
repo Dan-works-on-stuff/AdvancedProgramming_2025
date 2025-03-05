@@ -44,7 +44,7 @@ public class helper_functions {
         return matrix;
     }
 
-    public static String turn_to_string(int[][] matrix, int len) {
+    public static String turn_to_string(int[][] matrix, int len) {  ///look into string builder and printf
         String str = "";
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < len; j++) {
