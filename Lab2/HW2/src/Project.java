@@ -1,39 +1,75 @@
 import java.util.*;
 
+/**
+ * Represents the type/category of a project in an academic context.
+ * Projects can be either theoretical (research-oriented) or practical (application-oriented).
+ */
+enum ProjectType {
+    /** Theoretical project focused on research, analysis, or conceptual work. */
+    THEORETICAL,
+
+    /** Practical project involving hands-on implementation or applied work. */
+    PRACTICAL
+}
+
+/**
+ * Represents an academic project with a unique identifier and specific type.
+ * Projects are immutable in their type but can have their ID modified.
+ */
 public class Project {
     private int id;
     private final ProjectType type;
 
-    public Project(ProjectType type) {
+    /**
+     * Constructs a new Project with the specified ID and type.
+     *
+     * @param id   the unique identifier for the project
+     * @param type the category of the project (THEORETICAL/PRACTICAL)
+     */
+    public Project(int id, ProjectType type) {
         this.type = type;
+        this.id = id;
     }
 
+    /**
+     * Gets the project's unique identifier.
+     *
+     * @return the project ID as an integer
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Updates the project's identifier.
+     *
+     * @param id the new ID to assign to the project
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets the immutable project type (THEORETICAL or PRACTICAL).
+     *
+     * @return the project's category
+     * @see ProjectType
+     */
     public ProjectType getType() {
         return type;
     }
 
+    /**
+     * Returns a string representation of the project in the format:
+     * {@code Project{id=ID, type=TYPE}}
+     *
+     * @return a string containing the project's ID and type
+     */
     @Override
     public String toString() {
         return "Project{" +
                 "id=" + id +
                 ", type=" + type +
                 '}';
-    }
-    private Set<Student> students = new HashSet<>();
-    private Set<Teacher> teachers = new HashSet<>();
-
-    public Person[] getAllPersons() {
-        List<Person> allPersons = new ArrayList<>();
-        allPersons.addAll(students); // Students are Persons
-        allPersons.addAll(teachers); // Teachers are Persons
-        return allPersons.toArray(new Person[0]);
     }
 }
