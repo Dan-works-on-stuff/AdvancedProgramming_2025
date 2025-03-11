@@ -101,6 +101,12 @@ public class Problem {
         }
     }
 
+    public void addMultipleProjects(Project[] projects) {
+        for (Project project : projects) {
+            addProject(project);
+        }
+    }
+
     /**
      * Returns all persons (students and teachers) associated with the problem.
      * The returned array is a new array containing references to the actual objects.

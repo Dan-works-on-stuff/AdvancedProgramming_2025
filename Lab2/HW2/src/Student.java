@@ -5,12 +5,11 @@ import java.util.Objects;
  * Represents a student in an academic system, implementing the {@link Person} interface.
  * Students have a registration number, name, date of birth, and preferences for projects.
  */
-public class Student implements Person {
+public class Student extends Person {
     private String regNr;
-    private String name;
-    final LocalDate dob;
-    private Project preferredProject1;
-    private Project preferredProject2;
+    public Project preferredProject1;
+    public Project preferredProject2;
+    private Project assignedProject;
 
     /**
      * Constructs a new Student with the specified registration number, name, and date of birth.
@@ -19,10 +18,12 @@ public class Student implements Person {
      * @param name   the full name of the student
      * @param dob    the date of birth of the student
      */
-    public Student(String regNr, String name, LocalDate dob) {
+    public Student(String regNr, String name, LocalDate dob, Project preferredProject1, Project preferredProject2) {
         this.name = name;
         this.dob = dob;
         this.regNr = regNr;
+        this.preferredProject1 = preferredProject1;
+        this.preferredProject2 = preferredProject2;
     }
 
     /**
@@ -62,6 +63,14 @@ public class Student implements Person {
         this.name = name;
     }
 
+    public void setAssignedProject(int projectId) {
+        this.assignedProject = new Project(projectId);
+    }
+
+    public Project getAssignedProject() {
+        return assignedProject;
+    }
+
     /**
      * Returns a string representation of the student in the format:
      * {@code Student{regNr=REG_NR, name='NAME'}}
@@ -99,5 +108,18 @@ public class Student implements Person {
     @Override
     public int hashCode() {
         return Objects.hash(regNr);
+    }
+
+    public Project getPreferredProject1() {
+        return preferredProject1;
+    }
+    public void setPreferredProject1(Project preferredProject1) {
+        this.preferredProject1 = preferredProject1;
+    }
+    public Project getPreferredProject2() {
+        return preferredProject2;
+    }
+    public void setPreferredProject2(Project preferredProject2) {
+        this.preferredProject2 = preferredProject2;
     }
 }

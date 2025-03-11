@@ -8,9 +8,7 @@ import java.util.Objects;
  * <strong>Note:</strong> The projects functionality appears incomplete as the constructor does not initialize
  * the projects field, and there are no methods to modify it in the current implementation.
  */
-public class Teacher implements Person {
-    private String name;
-    private LocalDate dob;
+public class Teacher extends Person {
     String[] Projects; // Currently unused and uninitialized
 
     /**

@@ -1,11 +1,13 @@
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents a solution to a problem using a greedy algorithm to assign projects to students.
- * Projects are assigned in a round-robin fashion, cycling through the available projects repeatedly.
+ * The algorithm prioritizes assigning uniquely preferred projects first, then assigns remaining projects
+ * based on student preferences and availability.
  * <p>
- * <strong>Note:</strong> The current implementation may include null values in assignments if non-student persons
- * (e.g., teachers) exist in the problem, as it does not properly filter students during processing.
+ * This solution ensures that each student is assigned to exactly one project, and each project is assigned
+ * to at most one student.
  */
 public class Solution {
     private int SolutionID;
@@ -46,61 +48,167 @@ public class Solution {
     }
 
     /**
-     * Executes the greedy assignment algorithm:
+     * Executes the greedy assignment algorithm which consists of two passes:
      * <ol>
-     *   <li>Gets all persons (students + teachers) from the problem</li>
-     *   <li>Extracts students (with potential null entries for teachers)</li>
-     *   <li>Cycles through projects repeatedly to assign to students</li>
+     *   <li>First pass: Assigns projects that are uniquely preferred by one student.</li>
+     *   <li>Second pass: Assigns remaining projects to students based on their preferences,
+     *       or any available project if preferred ones are taken.</li>
      * </ol>
-     * <strong>Implementation Limitation:</strong> May assign null students if teachers exist in the problem.
      *
-     * @param problem the problem containing the data to process
+     * @param problem the problem containing the students, teachers, and projects to process
+     * @throws IllegalStateException if a student cannot be assigned a project due to no available projects
      */
     private void runGreedy(Problem problem) {
         Person[] allPersons = problem.getAllPersons();
         Student[] allStudents = extractStudents(allPersons);
         Project[] allProjects = problem.getProjects();
 
-        if(allStudents.length == 0 || allProjects.length == 0) { return; }
-
-        Student[] tempStudents = new Student[allStudents.length];
-        Project[] tempProjects = new Project[allStudents.length];
-        int counter = 0;
-        int projectCounter = 0;
-
-        for(Student s : allStudents) {
-            tempStudents[counter] = s;
-            tempProjects[counter] = allProjects[projectCounter];
-            counter++;
-            projectCounter = (projectCounter + 1) % allProjects.length;
+        if (allStudents.length == 0 || allProjects.length == 0) {
+            return;
         }
 
-        assignedStudents = Arrays.copyOf(tempStudents, counter);
-        assignedProjects = Arrays.copyOf(tempProjects, counter);
+        // Track project availability using IDs
+        Set<Integer> availableProjectIds = new HashSet<>();
+        for (Project project : allProjects) {
+            availableProjectIds.add(project.getId());
+        }
+
+        // Track student assignments
+        boolean[] isStudentAssigned = new boolean[allStudents.length];
+
+        // First pass: Assign uniquely preferred projects
+        for (Project project : allProjects) {
+            int projectId = project.getId();
+            if (countProjectPreferences(allStudents, projectId) == 1 && availableProjectIds.contains(projectId)) {
+                for (int i = 0; i < allStudents.length; i++) {
+                    if (!isStudentAssigned[i]) {
+                        Student student = allStudents[i];
+                        if (student.getPreferredProject1().getId() == projectId
+                                || student.getPreferredProject2().getId() == projectId) {
+                            assignProjectToStudent(student, project);
+                            isStudentAssigned[i] = true;
+                            availableProjectIds.remove(projectId);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Second pass: Assign remaining projects
+        for (int i = 0; i < allStudents.length; i++) {
+            if (!isStudentAssigned[i]) {
+                Student student = allStudents[i];
+                Project firstPref = student.getPreferredProject1();
+                Project secondPref = student.getPreferredProject2();
+
+                if (availableProjectIds.contains(firstPref.getId())) {
+                    assignProjectToStudent(student, firstPref);
+                    availableProjectIds.remove(firstPref.getId());
+                    isStudentAssigned[i] = true;
+                } else if (availableProjectIds.contains(secondPref.getId())) {
+                    assignProjectToStudent(student, secondPref);
+                    availableProjectIds.remove(secondPref.getId());
+                    isStudentAssigned[i] = true;
+                } else if (!availableProjectIds.isEmpty()) {
+                    int anyProjectId = availableProjectIds.iterator().next();
+                    Project anyProject = findProjectById(anyProjectId, allProjects);
+                    assignProjectToStudent(student, anyProject);
+                    availableProjectIds.remove(anyProjectId);
+                    isStudentAssigned[i] = true;
+                } else {
+                    throw new IllegalStateException("No projects available for student " + i);
+                }
+            }
+        }
+
+        // Store results
+        this.assignedStudents = allStudents;
+        this.assignedProjects = new Project[allStudents.length];
+        for (int i = 0; i < allStudents.length; i++) {
+            this.assignedProjects[i] = allStudents[i].getAssignedProject();
+        }
     }
 
     /**
-     * Filters students from a mixed array of persons.
-     * <strong>Note:</strong> Returns an array where non-student persons become null entries.
+     * Counts the number of students who have a specific project as one of their preferences.
      *
-     * @param allPersons array containing both students and teachers
-     * @return array with student instances and nulls for non-students
+     * @param students the array of students to check
+     * @param projectId the ID of the project to count preferences for
+     * @return the total number of students who prefer the specified project
      */
-    private Student[] extractStudents(Person[] allPersons) {
-        Student[] students = new Student[allPersons.length];
-        for (int i = 0; i < allPersons.length; i++) {
-            if (allPersons[i] instanceof Student) {
-                students[i] = (Student) allPersons[i];
+    private int countProjectPreferences(Student[] students, int projectId) {
+        int count = 0;
+        for (Student student : students) {
+            if (student.getPreferredProject1().getId() == projectId
+                    || student.getPreferredProject2().getId() == projectId) {
+                count++;
             }
         }
+        return count;
+    }
+
+    /**
+     * Finds a project by its ID within an array of projects.
+     *
+     * @param id the ID of the project to find
+     * @param projects the array of projects to search
+     * @return the project with the matching ID
+     * @throws IllegalArgumentException if no project with the given ID exists in the array
+     */
+    private Project findProjectById(int id, Project[] projects) {
+        for (Project project : projects) {
+            if (project.getId() == id) {
+                return project;
+            }
+        }
+        throw new IllegalArgumentException("Project not found: " + id);
+    }
+
+    /**
+     * Assigns a project to a student by setting the project's ID as the student's assigned project.
+     *
+     * @param student the student to assign the project to
+     * @param project the project to be assigned
+     */
+    private void assignProjectToStudent(Student student, Project project) {
+        student.setAssignedProject(project.getId());
+    }
+
+    /**
+     * Extracts students from an array containing both students and teachers.
+     *
+     * @param allPersons array containing both students and non-student persons (e.g., teachers)
+     * @return array of students with no null entries
+     */
+    private Student[] extractStudents(Person[] allPersons) {
+        // First count how many students we have
+        int studentCount = 0;
+        for (Person person : allPersons) {
+            if (person instanceof Student) {
+                studentCount++;
+            }
+        }
+
+        // Create array of exactly the right size
+        Student[] students = new Student[studentCount];
+
+        // Fill the array with actual students
+        int index = 0;
+        for (Person person : allPersons) {
+            if (person instanceof Student) {
+                students[index] = (Student) person;
+                index++;
+            }
+        }
+
         return students;
     }
 
     /**
-     * Gets the students assigned to projects.
-     * <strong>Warning:</strong> May contain null values if the problem included teachers.
+     * Gets the students who have been assigned to projects.
      *
-     * @return array of students (some entries may be null)
+     * @return an array of students, each assigned to a project
      */
     public Student[] getAssignedStudents() {
         return assignedStudents;

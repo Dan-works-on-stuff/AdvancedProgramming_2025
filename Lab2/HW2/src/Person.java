@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 
-public interface Person {
-    String getName();
-    LocalDate getDOB();
+abstract class Person {
+    abstract String getName();
+    abstract LocalDate getDOB();
+    protected String name;
+    protected LocalDate dob;
 }

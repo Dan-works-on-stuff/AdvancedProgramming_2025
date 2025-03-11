@@ -18,16 +18,9 @@ enum ProjectType {
  */
 public class Project {
     private int id;
-    private final ProjectType type;
+    private ProjectType type;
 
-    /**
-     * Constructs a new Project with the specified ID and type.
-     *
-     * @param id   the unique identifier for the project
-     * @param type the category of the project (THEORETICAL/PRACTICAL)
-     */
-    public Project(int id, ProjectType type) {
-        this.type = type;
+    public Project(int id) {
         this.id = id;
     }
 
