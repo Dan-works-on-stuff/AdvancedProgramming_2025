@@ -20,7 +20,7 @@ public class Schedule {
 
             for (int r = 0; r < runwayCount; r++) {
                 if (!runwayAvailability[r].isAfter(current.getStartTime())) {
-                    solution[i] = "Aircraft " + current.getAircraft().getModel() + " to runway " + (r + 1);
+                    solution[i] = "Aircraft " + current.getAircraft().getModel() + " to runway " + (r + 1) + ", from " + current.getStartTime() + " to " + current.getEndTime();
                     runwayAvailability[r] = current.getEndTime();
                     scheduled = true;
                     break;
@@ -28,7 +28,7 @@ public class Schedule {
             }
 
             if (!scheduled) {
-                solution[i] = "Aircraft " + current.getAircraft().getModel() + " could not be scheduled";
+                solution[i] = "Aircraft " + current.getAircraft().getModel() + " could not be scheduled" + ", from " + current.getStartTime() + " to " + current.getEndTime();
             }
         }
     }
