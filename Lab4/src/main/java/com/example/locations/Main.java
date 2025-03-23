@@ -1,9 +1,13 @@
 package com.example.locations;
+import com.github.javafaker.Faker;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.TreeSet;
+import org.jgrapht.*;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
+import org.jgrapht.graph.*;
+import org.jgrapht.traverse.*;
+import org.jgrapht.alg.shortestpath.*;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -33,16 +37,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        Faker faker = new Faker();
         Location[] locations = {
-                new Location("Springfield", LocationType.FRIENDLY),
-                new Location("Black Forest", LocationType.ENEMY),
-                new Location("Outpost 1", LocationType.ENEMY),
-                new Location("Central Base", LocationType.FRIENDLY),
-                new Location("Enemy Village", LocationType.ENEMY),
-                new Location("Mountain City", LocationType.NEUTRAL)
+                new Location(faker.yoda().quote(), LocationType.FRIENDLY),
+                new Location(faker.space().planet(), LocationType.ENEMY),
+                new Location(faker.space().planet(), LocationType.ENEMY),
+                new Location(faker.space().planet(), LocationType.FRIENDLY),
+                new Location(faker.space().planet(), LocationType.ENEMY),
+                new Location(faker.space().planet(), LocationType.NEUTRAL)
         };
 
-        // Process friendly locations
+
         TreeSet<Location> friendlyLocations = Arrays.stream(locations)
                 .filter(l -> l.getType() == LocationType.FRIENDLY)
                 .collect(Collectors.toCollection(TreeSet::new));
@@ -50,14 +55,42 @@ public class Main {
         System.out.println("Friendly locations sorted by natural order:");
         friendlyLocations.forEach(System.out::println);
 
-        // Process enemy locations
+
         LinkedList<Location> enemyLocations = Arrays.stream(locations)
                 .filter(l -> l.getType() == LocationType.ENEMY)
                 .sorted(Comparator.comparing(Location::getType)
                         .thenComparing(Location::getName))
                 .collect(Collectors.toCollection(LinkedList::new));
 
+
         System.out.println("\nEnemy locations sorted by type and name:");
         enemyLocations.forEach(System.out::println);
+
+        Graph<Location, DefaultWeightedEdge> g =new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
+        g.addVertex(locations[0]);
+        g.addVertex(locations[1]);
+        g.addVertex(locations[2]);
+        g.addVertex(locations[3]);
+        g.addVertex(locations[4]);
+        g.addVertex(locations[5]);
+        g.addEdge(locations[0], locations[1]);
+        g.setEdgeWeight(g.getEdge(locations[0], locations[1]), 20);
+        g.addEdge(locations[1], locations[2]);
+        g.setEdgeWeight(g.getEdge(locations[1], locations[2]), 30);
+        g.addEdge(locations[2], locations[3]);
+        g.setEdgeWeight(g.getEdge(locations[2], locations[3]), 40);
+        g.addEdge(locations[3], locations[4]);
+        g.setEdgeWeight(g.getEdge(locations[3], locations[4]), 50);
+        g.addEdge(locations[4], locations[5]);
+        g.setEdgeWeight(g.getEdge(locations[5], locations[4]), 60);
+        System.out.println();
+        Iterator<Location> edges = new DepthFirstIterator<>(g, locations[0]);
+        while (edges.hasNext()) {
+            System.out.println(edges.next());
+        }
+        System.out.println("\nShortest path from "+locations[0]+" to "+locations[4]);
+        DijkstraShortestPath<Location, DefaultWeightedEdge> dijkstraBaNebunule = new DijkstraShortestPath<>(g);
+        var shortestPath = dijkstraBaNebunule.getPath(locations[0], locations[4]);
+        System.out.println(shortestPath);
     }
 }
