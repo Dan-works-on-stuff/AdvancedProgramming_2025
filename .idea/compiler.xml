@@ -8,9 +8,11 @@
         <outputRelativeToContentRoot value="true" />
         <module name="locations" />
         <module name="Lab4" />
+        <module name="HW5" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="HW5_Maven" target="22" />
       <module name="test" target="22" />
     </bytecodeTargetLevel>
   </component>

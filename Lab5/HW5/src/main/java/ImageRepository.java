@@ -1,16 +1,14 @@
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 // Repository class to manage images
 public class ImageRepository {
-    private final List<Image> images = new ArrayList<>();
+    private static final List<Image> images = new ArrayList<>();
 
-    public void addImage(Image image) {
+    public static void addImage(Image image) {
         images.add(image);
     }
 
@@ -29,5 +27,9 @@ public class ImageRepository {
                 .filter(img -> img.name().equals(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void removeImage(Image image) {
+        images.remove(image);
     }
 }
