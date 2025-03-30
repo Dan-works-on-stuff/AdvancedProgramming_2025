@@ -9,6 +9,8 @@ import org.jgrapht.alg.shortestpath.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.Scanner;
 
 public class Main {
     enum LocationType { FRIENDLY, NEUTRAL, ENEMY }
@@ -39,7 +41,7 @@ public class Main {
     public static void main(String[] args) {
         Faker faker = new Faker();
         Location[] locations = {
-                new Location(faker.yoda().quote(), LocationType.FRIENDLY),
+                new Location(faker.space().planet(), LocationType.FRIENDLY),
                 new Location(faker.space().planet(), LocationType.ENEMY),
                 new Location(faker.space().planet(), LocationType.ENEMY),
                 new Location(faker.space().planet(), LocationType.FRIENDLY),
@@ -66,6 +68,14 @@ public class Main {
         System.out.println("\nEnemy locations sorted by type and name:");
         enemyLocations.forEach(System.out::println);
 
+        LinkedList<Location> neutralLocations = Arrays.stream(locations)
+                .filter(l->l.getType() == LocationType.NEUTRAL)
+                .sorted(Comparator.comparing(Location::getType)
+                .thenComparing(Location::getName))
+                .collect(Collectors.toCollection(LinkedList::new));
+        System.out.println("\nNeutral locations sorted by type and name:");
+        neutralLocations.forEach(System.out::println);
+
         Graph<Location, DefaultWeightedEdge> g =new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
         g.addVertex(locations[0]);
         g.addVertex(locations[1]);
@@ -83,14 +93,49 @@ public class Main {
         g.setEdgeWeight(g.getEdge(locations[3], locations[4]), 50);
         g.addEdge(locations[4], locations[5]);
         g.setEdgeWeight(g.getEdge(locations[5], locations[4]), 60);
-        System.out.println();
+//        System.out.println();
         Iterator<Location> edges = new DepthFirstIterator<>(g, locations[0]);
-        while (edges.hasNext()) {
-            System.out.println(edges.next());
+//        while (edges.hasNext()) {
+//            System.out.println(edges.next());
+//        }
+        System.out.println("Input the start vertex:");
+        Scanner input = new Scanner(System.in);
+        int startVertex = input.nextInt();
+        System.out.println("\nShortest path from the vertex "+startVertex + "("+ locations[startVertex]+ ")" + " to all the other locations:");
+        for (Location location : locations) {
+            if (location != locations[startVertex]) {
+                DijkstraShortestPath<Location, DefaultWeightedEdge> dijkstraBaNebunule = new DijkstraShortestPath<>(g);
+                var shortestPath = dijkstraBaNebunule.getPath(location, locations[startVertex]);
+                System.out.println(shortestPath + "\n");
+            }
         }
-        System.out.println("\nShortest path from "+locations[0]+" to "+locations[4]);
-        DijkstraShortestPath<Location, DefaultWeightedEdge> dijkstraBaNebunule = new DijkstraShortestPath<>(g);
-        var shortestPath = dijkstraBaNebunule.getPath(locations[0], locations[4]);
-        System.out.println(shortestPath);
+
+        Stream<Location> friendlyLocationsStream = friendlyLocations.stream();
+        Stream<Location> enemyLocationsStream = enemyLocations.stream();
+        Stream<Location> neutralLocationsStream = neutralLocations.stream();
+
+//        System.out.println("\nFriendly locations sorted by natural order:");
+//        friendlyLocationsStream.forEach(System.out::println);
+        /// STREAMS ARE SINGLE USE!!!!
+        Location startLoc = locations[startVertex];
+        DijkstraShortestPath<Location, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath<>(g);
+        ShortestPathAlgorithm.SingleSourcePaths<Location, DefaultWeightedEdge> paths = dijkstra.getPaths(startLoc);
+        processGroup("Friendly", friendlyLocationsStream, startLoc, paths);
+        processGroup("Neutral", neutralLocationsStream, startLoc, paths);
+        processGroup("Enemy", enemyLocationsStream, startLoc, paths);
+    }
+
+    static void processGroup(String type, Stream<Location> locations, Location start, ShortestPathAlgorithm.SingleSourcePaths<Location, ?> paths) {
+        System.out.println("\n" + type + " Locations:");
+        locations
+                .filter(loc -> loc != start)
+                .forEach(loc -> {
+                    GraphPath<Location, DefaultWeightedEdge> path = (GraphPath<Location, DefaultWeightedEdge>) paths.getPath(loc);
+                    if (path != null) {
+                        System.out.printf("%s: Time %.2f%n", loc.getName(), path.getWeight());
+                    } else {
+                        System.out.printf("%s: Unreachable%n", loc.getName());
+                    }
+                });
     }
 }
