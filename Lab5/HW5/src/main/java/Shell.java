@@ -3,14 +3,21 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 public class Shell {
     private String command;
-    private static final ImageRepository imageRepository = new ImageRepository();
+    private final ImageRepository imageRepository;
+    private final Scanner scanner;
+    public Shell() {
+        this.scanner = new Scanner(System.in);
+        this.imageRepository = new ImageRepository();
+    }
 
-    public void readCommand() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter command: ");
+    public void start() {
+        System.out.println("Image Shell - Commands: add, remove, update, save, load, report, exit");
         while (true) {
             System.out.print("> ");
             String command = scanner.nextLine().trim();
@@ -53,10 +60,19 @@ public class Shell {
     }
 
     private void handleReportCommand(String[] parts) {
-
+        String filename = "report.html";
+        if (parts.length > 1) {
+            filename = parts[1];
+        }
+        try{
+            ImageRepository.generateReport(filename);
+            System.out.println("Report generated and opened: " + filename);
+        } catch (IOException | TemplateException e  ) {
+            throw new IllegalArgumentException("Report generation failed: " + e.getMessage());
+        }
     }
 
-    private static void handleSaveCommand(String[] parts) {
+    private void handleSaveCommand(String[] parts) {
         try{
             ImageRepository.saveToFile(parts[1]);
             System.out.println("Saved images to: " + parts[1]);
@@ -65,7 +81,7 @@ public class Shell {
         }
     }
 
-    private static void handleLoadCommand(String[] parts) {
+    private void handleLoadCommand(String[] parts) {
         try{
             ImageRepository.loadFromFile(parts[1]);
             System.out.println("Loaded images from: " + parts[1]);
@@ -87,7 +103,7 @@ public class Shell {
         System.out.println("Updated " + attribute + " for '" + name + "'.");
     }
 
-    private static Image getImage(String[] parts, String attribute, Image oldImage) {
+    private Image getImage(String[] parts, String attribute, Image oldImage) {
         String value = parts[3];
         return switch (attribute){
             case "name" -> new Image(value, oldImage.date(), oldImage.tags(), oldImage.location());

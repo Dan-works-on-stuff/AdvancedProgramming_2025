@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Repository Report</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h1>Image Repository Report</h1>
+<p>Generated on: Mar 31, 2025, 7:58:36 PM</p>
+<p>Total images: 1</p>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Tags</th>
+        <th>Location</th>
+    </tr>
+        <tr>
+            <td>FreeMarker template error (DEBUG mode; use RETHROW in production!):
+For "${...}" content: Expected a string or something automatically convertible to string (number, date or boolean), or "template output" , but this has evaluated to a method+sequence (wrapper: f.e.b.SimpleMethodModel):
+==> image.name  [in template "report.ftlh" at line 25, column 19]
+
+----
+Tip: Maybe using obj.something() instead of obj.something will yield the desired value
+----
+
+----
+FTL stack trace ("~" means nesting-related):
+	- Failed at: ${image.name}  [in template "report.ftlh" at line 25, column 17]
+----
+
+Java stack trace (for programmers):
+----
+freemarker.core.NonStringOrTemplateOutputException: [... Exception message was already printed; see it above ...]
+	at freemarker.core.EvalUtil.coerceModelToTextualCommon(EvalUtil.java:525)
+	at freemarker.core.EvalUtil.coerceModelToStringOrMarkup(EvalUtil.java:401)
+	at freemarker.core.EvalUtil.coerceModelToStringOrMarkup(EvalUtil.java:370)
+	at freemarker.core.DollarVariable.calculateInterpolatedStringOrMarkup(DollarVariable.java:104)
+	at freemarker.core.DollarVariable.accept(DollarVariable.java:63)
+	at freemarker.core.Environment.visit(Environment.java:371)
+	at freemarker.core.IteratorBlock$IterationContext.executedNestedContentForCollOrSeqListing(IteratorBlock.java:321)
+	at freemarker.core.IteratorBlock$IterationContext.executeNestedContent(IteratorBlock.java:271)
+	at freemarker.core.IteratorBlock$IterationContext.accept(IteratorBlock.java:244)
+	at freemarker.core.Environment.visitIteratorBlock(Environment.java:645)
+	at freemarker.core.IteratorBlock.acceptWithResult(IteratorBlock.java:108)
+	at freemarker.core.IteratorBlock.accept(IteratorBlock.java:94)
+	at freemarker.core.Environment.visit(Environment.java:335)
+	at freemarker.core.Environment.visit(Environment.java:341)
+	at freemarker.core.Environment.process(Environment.java:314)
+	at freemarker.template.Template.process(Template.java:383)
+	at ImageRepository.generateReport(ImageRepository.java:71)
+	at Shell.handleReportCommand(Shell.java:68)
+	at Shell.start(Shell.java:51)
+	at Main.main(Main.java:25)

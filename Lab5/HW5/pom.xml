@@ -35,4 +35,11 @@ two freemarker.jar-s and unpredictable behavior on runtime!
             <version>2.3.32</version>
         </dependency>
     </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
 </project>
