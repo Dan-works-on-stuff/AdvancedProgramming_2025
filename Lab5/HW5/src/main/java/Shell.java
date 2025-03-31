@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -33,12 +34,43 @@ public class Shell {
                     case "update":
                         handleUpdateCommand(parts);
                         break;
+                    case "load":
+                        handleLoadCommand(parts);
+                        break;
+                    case "save":
+                        handleSaveCommand(parts);
+                        break;
+                    case "report":
+                        handleReportCommand(parts);
+                        break;
                     default:
                         System.out.println("Unknown command: " + command);
                 }
             } catch (IllegalArgumentException | DateTimeParseException e) {
                 System.out.println("Error: " + e.getMessage());
             }
+        }
+    }
+
+    private void handleReportCommand(String[] parts) {
+
+    }
+
+    private static void handleSaveCommand(String[] parts) {
+        try{
+            ImageRepository.saveToFile(parts[1]);
+            System.out.println("Saved images to: " + parts[1]);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Save failed: " + e.getMessage());
+        }
+    }
+
+    private static void handleLoadCommand(String[] parts) {
+        try{
+            ImageRepository.loadFromFile(parts[1]);
+            System.out.println("Loaded images from: " + parts[1]);
+        } catch (IOException e){
+            throw new IllegalArgumentException("Load failed: " + e.getMessage());
         }
     }
 
