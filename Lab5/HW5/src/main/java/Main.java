@@ -8,9 +8,9 @@ public class Main {
         ImageRepository ImageRepository = new ImageRepository();
 
         // Creating an example image
-        List<String> tags = List.of("vacation", "beach");
+        List<String> tags = List.of("TF2", "inginiir");
         Path location = Paths.get("C:/Users/radud/Documents/GitHub/AdvancedProgramming_2025/Lab5/HW5/The_Engineer.jpg"); // Update this path
-        Image image = new Image("summer2023", LocalDate.now(), tags, location.toFile());
+        Image image = new Image("inginer", LocalDate.now(), tags, location.toFile());
 
         ImageRepository.addImage(image);
 

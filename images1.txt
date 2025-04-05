@@ -1,0 +1,6 @@
+[ {
+  "name" : "2026-10-02",
+  "date" : [ 2026, 10, 2 ],
+  "tags" : [ "TF2", "inginiir" ],
+  "location" : "C:\\Users\\radud\\Documents\\GitHub\\AdvancedProgramming_2025\\Lab5\\HW5\\The_Engineer.jpg"
+} ]

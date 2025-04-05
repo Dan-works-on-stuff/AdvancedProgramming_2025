@@ -1,0 +1,6 @@
+[ {
+  "name" : "sunset",
+  "date" : [ 2025, 4, 2 ],
+  "tags" : [ "sun", "set" ],
+  "location" : "C:\Users\radud\Documents\GitHub\AdvancedProgramming_2025\Lab5\HW5\src\main\resources\sunset.jpg"
+} ]

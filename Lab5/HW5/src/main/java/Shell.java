@@ -17,7 +17,7 @@ public class Shell {
     }
 
     public void start() {
-        System.out.println("Image Shell - Commands: add, remove, update, save, load, report, exit");
+        System.out.println("Image Shell - Commands: add, remove, update, save, exit");
         while (true) {
             System.out.print("> ");
             String command = scanner.nextLine().trim();
@@ -33,23 +33,28 @@ public class Shell {
                         scanner.close();
                         return;
                     case "add":
-                        handleAddCommand(parts);
+                        Add add = new Add();
+                        add.handleAddCommand(parts);
                         break;
                     case "remove":
-                        handleRemoveCommand(parts);
+                        Remove removeCommand = new Remove();
+                        removeCommand.handleRemoveCommand(parts);
                         break;
                     case "update":
-                        handleUpdateCommand(parts);
+                        Update update = new Update();
+                        update.handleUpdateCommand(parts);
                         break;
-                    case "load":
-                        handleLoadCommand(parts);
-                        break;
+//                    case "load":
+//                        Load load = new Load();
+//                        load.handleLoadCommand(parts);
+//                        break;
                     case "save":
-                        handleSaveCommand(parts);
+                        Save save = new Save();
+                        save.handleSaveCommand(parts);
                         break;
-                    case "report":
-                        handleReportCommand(parts);
-                        break;
+//                    case "report":
+////                        handleReportCommand(parts);
+//                        break;
                     default:
                         System.out.println("Unknown command: " + command);
                 }
@@ -59,77 +64,17 @@ public class Shell {
         }
     }
 
-    private void handleReportCommand(String[] parts) {
-        String filename = "report.html";
-        if (parts.length > 1) {
-            filename = parts[1];
-        }
-        try{
-            ImageRepository.generateReport(filename);
-            System.out.println("Report generated and opened: " + filename);
-        } catch (IOException | TemplateException e  ) {
-            throw new IllegalArgumentException("Report generation failed: " + e.getMessage());
-        }
-    }
+//    private void handleReportCommand(String[] parts) {
+//        String filename = "report.html";
+//        if (parts.length > 1) {
+//            filename = parts[1];
+//        }
+//        try{
+//            ImageRepository.generateReport(filename);
+//            System.out.println("Report generated and opened: " + filename);
+//        } catch (IOException | TemplateException e  ) {
+//            throw new IllegalArgumentException("Report generation failed: " + e.getMessage());
+//        }
+//    }
 
-    private void handleSaveCommand(String[] parts) {
-        try{
-            ImageRepository.saveToFile(parts[1]);
-            System.out.println("Saved images to: " + parts[1]);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Save failed: " + e.getMessage());
-        }
-    }
-
-    private void handleLoadCommand(String[] parts) {
-        try{
-            ImageRepository.loadFromFile(parts[1]);
-            System.out.println("Loaded images from: " + parts[1]);
-        } catch (IOException e){
-            throw new IllegalArgumentException("Load failed: " + e.getMessage());
-        }
-    }
-
-    private void handleUpdateCommand(String[] parts) {
-        String name = parts[1];
-        Image oldImage = imageRepository.getImageByName(name);
-        if (oldImage == null) {
-            throw new IllegalArgumentException("Image not found: " + name);
-        }
-        String attribute = parts[2].toLowerCase();
-        Image newImage = getImage(parts, attribute, oldImage);
-        imageRepository.removeImage(oldImage);
-        ImageRepository.addImage(newImage);
-        System.out.println("Updated " + attribute + " for '" + name + "'.");
-    }
-
-    private Image getImage(String[] parts, String attribute, Image oldImage) {
-        String value = parts[3];
-        return switch (attribute){
-            case "name" -> new Image(value, oldImage.date(), oldImage.tags(), oldImage.location());
-            case "date" -> new Image(value, LocalDate.parse(value), oldImage.tags(), oldImage.location());
-            case "tags" -> new Image(value, oldImage.date() ,Arrays.asList(value.split(",")), oldImage.location());
-            case "location" -> new Image(value, oldImage.date(), oldImage.tags(), new File(value));
-            default -> throw new IllegalArgumentException("Invalid attribute. Use date, tags, or location.");
-        };
-    }
-
-    private void handleRemoveCommand(String[] parts) {
-        String name = parts[1];
-        Image image = imageRepository.getImageByName(name);
-        if (image == null) {
-            throw new IllegalArgumentException("Image not found: " + name);
-        }
-        imageRepository.removeImage(image);
-        System.out.println("Removed image: " + name);
-    }
-
-    private void handleAddCommand(String[] parts) {
-        String name = parts[1].toLowerCase();
-        LocalDate date = LocalDate.parse(parts[2]);
-        List<String> tags = List.of(parts[3].split(","));
-        File location = new File(parts[4]);
-        ImageRepository.addImage(new Image(name, date, tags, location));
-        System.out.println("Image '" + name + "' added.");
-    }
 }
