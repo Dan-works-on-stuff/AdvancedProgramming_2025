@@ -6,16 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="locations" />
         <module name="Lab4" />
+        <module name="Server" />
+        <module name="HW5" />
+        <module name="locations" />
+        <module name="Client" />
         <module name="Lab6" />
         <module name="Lab7" />
-        <module name="HW5" />
         <module name="Lab8" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="HW5_Maven" target="22" />
+      <module name="Lab10" target="22" />
       <module name="test" target="22" />
     </bytecodeTargetLevel>
   </component>
