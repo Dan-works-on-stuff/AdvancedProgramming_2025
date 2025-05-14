@@ -9,7 +9,9 @@
         <module name="locations" />
         <module name="Lab4" />
         <module name="Lab6" />
+        <module name="Lab7" />
         <module name="HW5" />
+        <module name="Lab8" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
